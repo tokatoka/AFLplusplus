@@ -469,8 +469,6 @@ save_if_interesting(afl_state_t *afl, void *mem, u32 len, u8 fault) {
   s32 fd;
   u64 cksum = 0;
 
-  classify_counts(&afl->fsrv);
-
   /* Update path frequency. */
 
   /* Generating a hash on every input is super expensive. Bad idea and should
@@ -484,6 +482,8 @@ save_if_interesting(afl_state_t *afl, void *mem, u32 len, u8 fault) {
       afl->n_fuzz[cksum % N_FUZZ_SIZE]++;
 
   }
+  
+  classify_counts(&afl->fsrv);
 
   if (likely(fault == afl->crash_mode)) {
 

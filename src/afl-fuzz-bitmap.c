@@ -469,6 +469,8 @@ save_if_interesting(afl_state_t *afl, void *mem, u32 len, u8 fault) {
   s32 fd;
   u64 cksum = 0;
 
+  classify_counts(&afl->fsrv);
+
   /* Update path frequency. */
 
   /* Generating a hash on every input is super expensive. Bad idea and should
@@ -488,7 +490,7 @@ save_if_interesting(afl_state_t *afl, void *mem, u32 len, u8 fault) {
     /* Keep only if there are new bits in the map, add to queue for
        future fuzzing, etc. */
 
-    new_bits = has_new_bits_unclassified(afl, afl->virgin_bits);
+    new_bits = has_new_bits(afl, afl->virgin_bits);
 
     if (likely(!new_bits)) {
 

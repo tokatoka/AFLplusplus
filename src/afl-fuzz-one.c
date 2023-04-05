@@ -31,7 +31,7 @@
 static u32 mutation_array_explore[] = {
 
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18,
-    19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37};
+    19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36};
 // static u32 mutation_array_exploit[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 // 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
 // 31 }; static u32 mutation_array_txt_explore[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8,
@@ -2191,6 +2191,9 @@ havoc_stage:
 
       }
 
+retry_havoc:
+{
+
       u32 r = rand_below(afl, r_max);
 
       switch (mutation_array[r]) {
@@ -2977,21 +2980,6 @@ havoc_stage:
 
         case 30: {
 
-          /* Neg byte. */
-
-#ifdef INTROSPECTION
-          snprintf(afl->m_tmp, sizeof(afl->m_tmp), " NEG_");
-          strcat(afl->mutation, afl->m_tmp);
-#endif
-          item = rand_below(afl, temp_len);
-
-          out_buf[item] = ~out_buf[item];
-          break;
-
-        }
-
-        case 31: {
-
           u32 len = 1 + rand_below(afl, 8);
           u32 pos = rand_below(afl, temp_len);
           /* Insert ascii number. */
@@ -3010,9 +2998,9 @@ havoc_stage:
 
         }
 
-        case 32: {
+        case 31: {
 
-          if (!afl->extras_cnt) { break; }
+          if (!afl->extras_cnt) { goto retry_havoc; }
 
           /* Use the dictionary. */
 
@@ -3033,9 +3021,9 @@ havoc_stage:
 
         }
 
-        case 33: {
+        case 32: {
 
-          if (!afl->extras_cnt) { break; }
+          if (!afl->extras_cnt) { goto retry_havoc; }
 
           u32 use_extra = rand_below(afl, afl->extras_cnt);
           u32 extra_len = afl->extras[use_extra].len;
@@ -3064,9 +3052,9 @@ havoc_stage:
 
         }
 
-        case 34: {
+        case 33: {
 
-          if (!afl->a_extras_cnt) { break; }
+          if (!afl->a_extras_cnt) { goto retry_havoc; }
 
           /* Use the dictionary. */
 
@@ -3087,9 +3075,9 @@ havoc_stage:
 
         }
 
-        case 35: {
+        case 34: {
 
-          if (!afl->a_extras_cnt) { break; }
+          if (!afl->a_extras_cnt) { goto retry_havoc; }
 
           u32 use_extra = rand_below(afl, afl->a_extras_cnt);
           u32 extra_len = afl->a_extras[use_extra].len;
@@ -3118,9 +3106,9 @@ havoc_stage:
 
         }
 
-        case 36: {
+        case 35: {
 
-          if (afl->ready_for_splicing_count <= 1) { break; }
+          if (afl->ready_for_splicing_count <= 1) { goto retry_havoc; }
 
           /* Pick a random queue entry and seek to it. */
 
@@ -3158,9 +3146,9 @@ havoc_stage:
 
         }
 
-        case 37: {
+        case 36: {
 
-          if (afl->ready_for_splicing_count <= 1) { break; }
+          if (afl->ready_for_splicing_count <= 1) { goto retry_havoc; }
           if (temp_len + HAVOC_BLK_XL >= MAX_FILE) { break; }
 
           /* Pick a random queue entry and seek to it. */
@@ -3215,7 +3203,7 @@ havoc_stage:
         }
 
       }
-
+     }
     }
 
     if (common_fuzz_stuff(afl, out_buf, temp_len)) { goto abandon_entry; }

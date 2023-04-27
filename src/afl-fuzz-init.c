@@ -1162,6 +1162,7 @@ void perform_dry_run(afl_state_t *afl) {
 
   /* Now we remove all entries from the queue that have a duplicate trace map */
 
+/*
   u32 duplicates = 0, i;
 
   for (idx = 0; idx < afl->queued_items; idx++) {
@@ -1232,6 +1233,7 @@ void perform_dry_run(afl_state_t *afl) {
     afl->queue_top = afl->queue;
 
   }
+*/
 
   OKF("All test cases processed.");
 

@@ -1,3 +1,8 @@
+branch description: the idea here is to display when to expect the next find
+by an algo developed by marcel boehme. at this state the algo is not working
+yet.
+
+
 # American Fuzzy Lop plus plus (afl++)
 
   <img align="right" src="https://raw.githubusercontent.com/andreafioraldi/AFLplusplus-website/master/static/logo_256x256.png" alt="AFL++ Logo">

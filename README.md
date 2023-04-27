@@ -1,3 +1,9 @@
+
+branch: test new mutations stratgies, only one is selected and used 1-6 times
+makes only sense to use with `make INTROSPECTION=1` and collect results for
+statistical analysis.
+
+
 # American Fuzzy Lop plus plus (AFL++)
 
 <img align="right" src="https://raw.githubusercontent.com/AFLplusplus/Website/master/static/aflpp_bg.svg" alt="AFL++ logo" width="250" heigh="250">

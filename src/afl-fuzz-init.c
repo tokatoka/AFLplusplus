@@ -939,6 +939,8 @@ void perform_dry_run(afl_state_t *afl) {
           q->disabled = 1;
           q->perf_score = 0;
 
+          if (q->len > 4) { --afl->ready_for_splicing_count; }
+
           if (!q->was_fuzzed) {
 
             q->was_fuzzed = 1;
@@ -1081,6 +1083,8 @@ void perform_dry_run(afl_state_t *afl) {
         q->disabled = 1;
         q->perf_score = 0;
 
+        if (likely(q->len > 4)) { --afl->ready_for_splicing_count; }
+
         u32 i = 0;
         while (unlikely(i < afl->queued_items && afl->queue_buf[i] &&
                         afl->queue_buf[i]->disabled)) {
@@ -1200,6 +1204,8 @@ void perform_dry_run(afl_state_t *afl) {
           p->disabled = 1;
           p->perf_score = 0;
 
+          if (q->len > 4) { --afl->ready_for_splicing_count; }
+
           if (afl->debug) {
 
             WARNF("Same coverage - %s is kept active, %s is disabled.",
@@ -1219,6 +1225,8 @@ void perform_dry_run(afl_state_t *afl) {
 
           q->disabled = 1;
           q->perf_score = 0;
+
+          if (likely(q->len > 4)) { --afl->ready_for_splicing_count; }
 
           if (afl->debug) {
 

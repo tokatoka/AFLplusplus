@@ -55,8 +55,7 @@ inline u32 select_next_queue_entry(afl_state_t *afl) {
   " ==> %u\n", p, s, afl->alias_probability[s], s, s, afl->alias_table[s], p <
   afl->alias_probability[s] ? s : afl->alias_table[s]);
   */
-
-  fprintf(stderr, "s=%u queued=%u\n", s, afl->queued_items);
+  if (unlikely(afl->reinit_table)) { create_alias_table(afl); }
   return (p < afl->alias_probability[s] ? s : afl->alias_table[s]);
 
 }
@@ -620,6 +619,7 @@ void add_to_queue(afl_state_t *afl, u8 *fname, u32 len, u8 passed_det) {
   ++afl->pending_not_fuzzed;
 
   afl->cycles_wo_finds = 0;
+  afl->reinit_table = 1;
 
   struct queue_entry **queue_buf = (struct queue_entry **)afl_realloc(
       AFL_BUF_PARAM(queue), afl->queued_items * sizeof(struct queue_entry *));

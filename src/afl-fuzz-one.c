@@ -1968,7 +1968,7 @@ custom_mutator_stage:
 
             do {
 
-              tid = rand_below(afl, afl->queued_items);
+              tid = select_next_queue_entry(afl);
 
             } while (unlikely(tid == afl->current_entry ||
 
@@ -2879,7 +2879,7 @@ havoc_stage:
           u32 tid;
           do {
 
-            tid = rand_below(afl, afl->queued_items);
+            tid = select_next_queue_entry(afl);
 
           } while (tid == afl->current_entry || afl->queue_buf[tid]->len < 4);
 
@@ -3037,7 +3037,7 @@ retry_splicing:
 
     do {
 
-      tid = rand_below(afl, afl->queued_items);
+      tid = select_next_queue_entry(afl);
 
     } while (tid == afl->current_entry || afl->queue_buf[tid]->len < 4);
 
@@ -5274,7 +5274,7 @@ pacemaker_fuzzing:
                 u32 tid;
                 do {
 
-                  tid = rand_below(afl, afl->queued_items);
+                  tid = select_next_queue_entry(afl);
 
                 } while (tid == afl->current_entry ||
 
@@ -5483,7 +5483,7 @@ pacemaker_fuzzing:
 
         do {
 
-          tid = rand_below(afl, afl->queued_items);
+          tid = select_next_queue_entry(afl);
 
         } while (tid == afl->current_entry || afl->queue_buf[tid]->len < 4);
 

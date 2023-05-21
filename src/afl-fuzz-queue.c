@@ -91,10 +91,11 @@ void create_alias_table(afl_state_t *afl) {
 
   u32    n = afl->queued_items, i = 0, nSmall = 0, nLarge = n - 1;
   double sum = 0;
+  static u8 *out, *out_scratch, *in_scratch;
 
-  double *P = (double *)afl_realloc(AFL_BUF_PARAM(out), n * sizeof(double));
-  u32 *Small = (int *)afl_realloc(AFL_BUF_PARAM(out_scratch), n * sizeof(u32));
-  u32 *Large = (int *)afl_realloc(AFL_BUF_PARAM(in_scratch), n * sizeof(u32));
+  double *P = (double *)afl_realloc((void**)&out, n * sizeof(double));
+  u32 *Small = (int *)afl_realloc((void**)&out_scratch, n * sizeof(u32));
+  u32 *Large = (int *)afl_realloc((void**)&in_scratch, n * sizeof(u32));
 
   afl->alias_table =
       (u32 *)afl_realloc((void **)&afl->alias_table, n * sizeof(u32));

@@ -56,6 +56,7 @@ inline u32 select_next_queue_entry(afl_state_t *afl) {
   afl->alias_probability[s] ? s : afl->alias_table[s]);
   */
 
+  fprintf(stderr, "s=%u queued=%u\n", s, afl->queued_items);
   return (p < afl->alias_probability[s] ? s : afl->alias_table[s]);
 
 }

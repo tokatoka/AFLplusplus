@@ -1899,13 +1899,11 @@ static u8 cmp_fuzz(afl_state_t *afl, u32 key, u8 *orig_buf, u8 *buf, u8 *cbuf,
         {
 
           if (!memcmp((u8 *)&o->v0, (u8 *)&orig_o->v0, SHAPE_BYTES(h->shape)) &&
-              (!found_one ||
-               check_if_text_buf((u8 *)&o->v0, SHAPE_BYTES(h->shape)) ==
+              (check_if_text_buf((u8 *)&o->v0, SHAPE_BYTES(h->shape)) ==
                    SHAPE_BYTES(h->shape)))
             try_to_add_to_dict(afl, o->v0, SHAPE_BYTES(h->shape));
           if (!memcmp((u8 *)&o->v1, (u8 *)&orig_o->v1, SHAPE_BYTES(h->shape)) &&
-              (!found_one ||
-               check_if_text_buf((u8 *)&o->v1, SHAPE_BYTES(h->shape)) ==
+              (check_if_text_buf((u8 *)&o->v1, SHAPE_BYTES(h->shape)) ==
                    SHAPE_BYTES(h->shape)))
             try_to_add_to_dict(afl, o->v1, SHAPE_BYTES(h->shape));
 
@@ -2593,10 +2591,10 @@ static u8 rtn_fuzz(afl_state_t *afl, u32 key, u8 *orig_buf, u8 *buf, u8 *cbuf,
       // o->v0, v1_len, o->v1);
 
       if (!memcmp(o->v0, orig_o->v0, v0_len) ||
-          (!found_one || check_if_text_buf((u8 *)&o->v0, v0_len) == v0_len))
+          (check_if_text_buf((u8 *)&o->v0, v0_len) == v0_len))
         maybe_add_auto(afl, o->v0, v0_len);
       if (!memcmp(o->v1, orig_o->v1, v1_len) ||
-          (!found_one || check_if_text_buf((u8 *)&o->v1, v1_len) == v1_len))
+          (check_if_text_buf((u8 *)&o->v1, v1_len) == v1_len))
         maybe_add_auto(afl, o->v1, v1_len);
 
       //}

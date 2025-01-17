@@ -2871,6 +2871,7 @@ int main(int argc, char **argv_orig, char **envp) {
 
   // real start time, we reset, so this works correctly with -V
   afl->start_time = get_cur_time();
+  init_perf_timer(afl->timer);
 
   while (likely(!afl->stop_soon)) {
 
@@ -3095,7 +3096,9 @@ int main(int argc, char **argv_orig, char **envp) {
     ++runs_in_current_cycle;
 
     do {
-
+      
+      show_perf_timer(afl->timer);
+      
       if (likely(!afl->old_seed_selection)) {
 
         if (likely(afl->pending_favored && afl->smallest_favored >= 0)) {

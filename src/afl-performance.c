@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "afl-fuzz.h"
 #include "types.h"
+#include <sys/time.h>
 
 #ifdef _HAVE_AVX2
   #define T1HA0_AESNI_AVAILABLE 1
@@ -425,3 +426,108 @@ char *sha1_hex_for_file(const char *fname, u32 len) {
 
 }
 
+
+// Helper macro to calculate and print percentage
+#define SHOW_PERF(name, value) { \
+    double percentage = ((double)(value) * 100.0) / total_time; \
+    printf("%-15s: %6.2f%% (%llu ns)\n", name, percentage, (value)); \
+}
+
+void init_perf_timer(struct perf_timer *timer) {
+  u64 current;
+  struct timespec spec;
+  clock_gettime(CLOCK_REALTIME, &spec);
+  current = (spec.tv_sec * 1000000000) + spec.tv_nsec;
+  timer->fuzz_start = current;
+}
+
+void mark_time(struct perf_timer *timer) {
+  u64 current;
+  struct timespec spec;
+  clock_gettime(CLOCK_REALTIME, &spec);
+  current = (spec.tv_sec * 1000000000) + spec.tv_nsec;
+  timer->prev = current;
+}
+
+
+void mark_task_time(struct perf_timer *timer, TASK t) {
+  u64 current;
+  struct timespec spec;
+  clock_gettime(CLOCK_REALTIME, &spec);
+  current = (spec.tv_sec * 1000000000) + spec.tv_nsec;
+  u64 diff = current - timer->prev;
+
+  switch (t) {
+    case Calibration:
+      timer -> calibration += diff;
+      break;
+    case Trimming:
+      timer -> trimming += diff;
+      break;
+    case CalculateScore:
+      timer -> score += diff;
+      break;
+    case MapInit:
+      timer -> mapinit += diff;
+      break;
+    case Havoc:
+      timer -> havoc += diff;
+      break;
+    case Execution:
+      timer -> execution += diff;
+      break;
+    case IfInteresting:
+      timer -> if_interesting += diff;
+      break;
+    default:
+      break;
+  }
+}
+
+void show_perf_timer(struct perf_timer *timer) {
+  // Get current time
+  u64 current;
+  struct timespec spec;
+  clock_gettime(CLOCK_REALTIME, &spec);
+  current = (spec.tv_sec * 1000000000) + spec.tv_nsec;
+
+  if (current - timer -> last_shown < 15000000000 ) {
+    // do it every 15 sec
+    return;
+  }
+  timer -> last_shown = current;
+
+  // Calculate total execution time
+  u64 total_time = current - timer->fuzz_start;
+  if (total_time == 0) return; // Avoid division by zero
+  // Calculate time spent on known operations
+  u64 known_time = timer->calibration + 
+                   timer->trimming + 
+                   timer->score + 
+                   timer->mapinit +
+                   timer->havoc + 
+                   timer->execution + 
+                   timer->if_interesting;
+  // Calculate others (remaining time)
+  timer->others = total_time - known_time;
+  ACTF("\n=== Performance Statistics ===\n");
+  ACTF("Total execution time: %llu ms", total_time / 1000000);
+  // Calculate and print percentage for each operation
+  ACTF("%-15s: %6.2f%% (%llu ms)", "Calibration",
+         ((double)timer->calibration * 100.0) / total_time, timer->calibration / 1000000);
+  ACTF("%-15s: %6.2f%% (%llu ms)", "Trimming",
+         ((double)timer->trimming * 100.0) / total_time, timer->trimming / 1000000);
+  ACTF("%-15s: %6.2f%% (%llu ms)", "Score",
+         ((double)timer->score * 100.0) / total_time, timer->score / 1000000);
+  ACTF("%-15s: %6.2f%% (%llu ms)", "Havoc",
+         ((double)timer->havoc * 100.0) / total_time, timer->havoc / 1000000);
+  ACTF("%-15s: %6.2f%% (%llu ms)", "MapInit",
+         ((double)timer->mapinit * 100.0) / total_time, timer->mapinit / 1000000);
+  ACTF("%-15s: %6.2f%% (%llu ms)", "Execution",
+         ((double)timer->execution * 100.0) / total_time, timer->execution / 1000000);
+  ACTF("%-15s: %6.2f%% (%llu ms)", "If Interesting",
+         ((double)timer->if_interesting * 100.0) / total_time, timer->if_interesting / 1000000);
+  ACTF("%-15s: %6.2f%% (%llu ms)", "Others",
+         ((double)timer->others * 100.0) / total_time, timer->others / 1000000);
+  ACTF("\n");
+}

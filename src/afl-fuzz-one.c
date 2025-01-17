@@ -443,8 +443,10 @@ u8 fuzz_one_original(afl_state_t *afl) {
 
       afl->queue_cur->exec_cksum = 0;
 
+      mark_time(afl->timer);
       res =
           calibrate_case(afl, afl->queue_cur, in_buf, afl->queue_cycle - 1, 0);
+      mark_task_time(afl->timer, Calibration);
 
       if (unlikely(res == FSRV_RUN_ERROR)) {
 
@@ -466,7 +468,7 @@ u8 fuzz_one_original(afl_state_t *afl) {
   /************
    * TRIMMING *
    ************/
-
+  mark_time(afl->timer);
   if (unlikely(!afl->non_instrumented_mode && !afl->queue_cur->trim_done &&
                !afl->disable_trim)) {
 
@@ -2143,6 +2145,7 @@ havoc_stage:
   // + (afl->extras_cnt ? 2 : 0) + (afl->a_extras_cnt ? 2 : 0);
 
   for (afl->stage_cur = 0; afl->stage_cur < afl->stage_max; ++afl->stage_cur) {
+    mark_time(afl->timer);
 
     u32 use_stacking = 1 + rand_below(afl, stack_max);
 
@@ -2513,7 +2516,7 @@ havoc_stage:
 
 #ifdef INTROSPECTION
             snprintf(afl->m_tmp, sizeof(afl->m_tmp), " CLONE-%s_%u_%u_%u",
-                     "COPY", clone_from, clone_to, clone_len);
+                      "COPY", clone_from, clone_to, clone_len);
             strcat(afl->mutation, afl->m_tmp);
 #endif
             u8 *new_buf =
@@ -3274,6 +3277,7 @@ havoc_stage:
     }
 
     }
+    mark_task_time(afl->timer, Havoc);
 
     if (common_fuzz_stuff(afl, out_buf, temp_len)) { goto abandon_entry; }
 
@@ -6218,3 +6222,4 @@ u8 fuzz_one(afl_state_t *afl) {
 
 }
 
+ 

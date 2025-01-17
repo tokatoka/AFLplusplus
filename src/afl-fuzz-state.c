@@ -141,6 +141,9 @@ void afl_state_init(afl_state_t *afl, uint32_t map_size) {
   afl->havoc_prof =
       (struct havoc_profile *)ck_alloc(sizeof(struct havoc_profile));
 
+  afl->timer =
+      (struct perf_timer *)ck_alloc(sizeof(struct perf_timer));
+
   init_mopt_globals(afl);
 
   list_append(&afl_states, afl);

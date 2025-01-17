@@ -848,6 +848,8 @@ typedef struct afl_state {
 
   struct skipdet_global *skipdet_g;
 
+  struct perf_timer* timer;
+
 #ifdef INTROSPECTION
   char  mutation[8072];
   char  m_tmp[4096];
@@ -856,6 +858,38 @@ typedef struct afl_state {
 #endif
 
 } afl_state_t;
+
+// performance introspection for fuzz_one and common_fuzz_stuff functions
+struct perf_timer {
+  u64 fuzz_start; 
+  u64 prev;
+  u64 last_shown;
+  u64 calibration;
+  u64 trimming;
+  u64 score;
+  u64 havoc;
+  u64 mapinit;
+  u64 execution;
+  u64 if_interesting;
+  u64 others;
+};
+
+// type of tasks fuzzers perform
+typedef enum {
+  Calibration,
+  Trimming,
+  CalculateScore,
+  Havoc,
+  Execution,
+  MapInit,
+  IfInteresting,
+  Others,
+} TASK;
+
+void mark_time(struct perf_timer *);
+void mark_task_time(struct perf_timer *, TASK);
+void init_perf_timer(struct perf_timer *);
+void show_perf_timer(struct perf_timer *);
 
 struct custom_mutator {
 

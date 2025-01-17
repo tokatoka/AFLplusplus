@@ -27,9 +27,7 @@
  */
 
 #include "config.h"
-#ifdef AFL_PERSISTENT_RECORD
-  #include "afl-fuzz.h"
-#endif
+#include "afl-fuzz.h"
 #include "types.h"
 #include "debug.h"
 #include "common.h"
@@ -1918,6 +1916,8 @@ fsrv_run_result_t __attribute__((hot)) afl_fsrv_run_target(
      must prevent any earlier operations from venturing into that
      territory. */
 
+  afl_state_t *afl_state = (afl_state_t *)fsrv->afl_ptr;
+  mark_time(afl_state->timer);
 #ifdef __linux__
   if (likely(!fsrv->nyx_mode)) {
 
@@ -1930,9 +1930,11 @@ fsrv_run_result_t __attribute__((hot)) afl_fsrv_run_target(
   memset(fsrv->trace_bits, 0, fsrv->map_size);
   MEM_BARRIER();
 #endif
+  mark_task_time(afl_state->timer, MapInit);
 
   /* we have the fork server (or faux server) up and running
   First, tell it if the previous run timed out. */
+  mark_time(afl_state->timer);
 
   if ((res = write(fsrv->fsrv_ctl_fd, &write_value, 4)) != 4) {
 
@@ -2011,6 +2013,7 @@ fsrv_run_result_t __attribute__((hot)) afl_fsrv_run_target(
     if (read(fsrv->fsrv_st_fd, &fsrv->child_status, 4) < 4) { exec_ms = 0; }
 
   }
+  mark_task_time(afl_state->timer, Execution);
 
   if (!exec_ms) {
 

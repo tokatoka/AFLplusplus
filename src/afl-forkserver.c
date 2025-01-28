@@ -1917,7 +1917,6 @@ fsrv_run_result_t __attribute__((hot)) afl_fsrv_run_target(
      territory. */
 
   afl_state_t *afl_state = (afl_state_t *)fsrv->afl_ptr;
-  mark_time(afl_state->timer);
 #ifdef __linux__
   if (likely(!fsrv->nyx_mode)) {
 
@@ -1930,7 +1929,7 @@ fsrv_run_result_t __attribute__((hot)) afl_fsrv_run_target(
   memset(fsrv->trace_bits, 0, fsrv->map_size);
   MEM_BARRIER();
 #endif
-  mark_task_time(afl_state->timer, MapInit);
+
 
   /* we have the fork server (or faux server) up and running
   First, tell it if the previous run timed out. */

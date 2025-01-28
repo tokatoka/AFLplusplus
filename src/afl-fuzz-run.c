@@ -1223,9 +1223,9 @@ u8 __attribute__((hot)) common_fuzz_stuff(afl_state_t *afl, u8 *out_buf,
   }
 
   /* This handles FAULT_ERROR for us: */
-  mark_time(afl->timer);
+
   afl->queued_discovered += save_if_interesting(afl, out_buf, len, fault);
-  mark_task_time(afl->timer, IfInteresting);
+
 
   if (!(afl->stage_cur % afl->stats_update_freq) ||
       afl->stage_cur + 1 == afl->stage_max) {

@@ -3096,7 +3096,7 @@ int main(int argc, char **argv_orig, char **envp) {
     ++runs_in_current_cycle;
 
     do {
-      
+
       show_perf_timer(afl->timer);
       
       if (likely(!afl->old_seed_selection)) {

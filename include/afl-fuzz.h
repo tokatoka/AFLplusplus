@@ -864,26 +864,13 @@ struct perf_timer {
   u64 fuzz_start; 
   u64 prev;
   u64 last_shown;
-  u64 calibration;
-  u64 trimming;
-  u64 score;
-  u64 havoc;
-  u64 mapinit;
   u64 execution;
-  u64 if_interesting;
   u64 others;
 };
 
 // type of tasks fuzzers perform
 typedef enum {
-  Calibration,
-  Trimming,
-  CalculateScore,
-  Havoc,
   Execution,
-  MapInit,
-  IfInteresting,
-  Others,
 } TASK;
 
 void mark_time(struct perf_timer *);

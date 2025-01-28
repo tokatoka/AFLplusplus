@@ -368,6 +368,7 @@ void write_stats_file(afl_state_t *afl, u32 t_bytes, double bitmap_cvg,
       "fuzz_time         : %llu\n"
       "calibration_time  : %llu\n"
       "cmplog_time       : %llu\n"
+      "exec_time         : %llu\n"
       "sync_time         : %llu\n"
       "trim_time         : %llu\n"
       "execs_done        : %llu\n"
@@ -417,6 +418,7 @@ void write_stats_file(afl_state_t *afl, u32 t_bytes, double bitmap_cvg,
                  : (cur_time - afl->last_find_time) / 1000),
       (runtime_ms - MIN(runtime_ms, overhead_ms)) / 1000,
       afl->calibration_time_us / 1000000, afl->cmplog_time_us / 1000000,
+      afl->timer->execution,
       afl->sync_time_us / 1000000, afl->trim_time_us / 1000000,
       afl->fsrv.total_execs,
       afl->fsrv.total_execs / ((double)(runtime_ms) / 1000),

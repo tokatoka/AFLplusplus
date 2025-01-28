@@ -1994,7 +1994,7 @@ fsrv_run_result_t __attribute__((hot)) afl_fsrv_run_target(
 
   exec_ms = read_s32_timed(fsrv->fsrv_st_fd, &fsrv->child_status, timeout,
                            stop_soon_p);
-
+  mark_task_time(afl_state->timer, Execution);
   if (exec_ms > timeout) {
 
     /* If there was no response from forkserver after timeout milliseconds,
@@ -2012,7 +2012,6 @@ fsrv_run_result_t __attribute__((hot)) afl_fsrv_run_target(
     if (read(fsrv->fsrv_st_fd, &fsrv->child_status, 4) < 4) { exec_ms = 0; }
 
   }
-  mark_task_time(afl_state->timer, Execution);
 
   if (!exec_ms) {
 

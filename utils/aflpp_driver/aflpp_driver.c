@@ -421,14 +421,14 @@ __attribute__((weak)) int LLVMFuzzerRunDriver(
         }
 
         prev_length = length;
-
+        /*
         if (unlikely(callback(__afl_fuzz_ptr, length) == -1)) {
 
           memset(__afl_area_ptr, 0, __afl_map_size);
           __afl_area_ptr[0] = 1;
 
         }
-
+        */
       }
 
     }
@@ -436,13 +436,14 @@ __attribute__((weak)) int LLVMFuzzerRunDriver(
   } else {
 
     while (__afl_persistent_loop(N)) {
-
+      /*
       if (unlikely(callback(__afl_fuzz_ptr, *__afl_fuzz_len) == -1)) {
 
         memset(__afl_area_ptr, 0, __afl_map_size);
         __afl_area_ptr[0] = 1;
 
       }
+      */
 
     }
 
